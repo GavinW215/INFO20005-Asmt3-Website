@@ -11,7 +11,6 @@
     /* Typography */
     --font-heading: 'Source Serif Pro', serif;
     --font-body: 'Source Serif Pro', serif;
-    --font-logo: 'Peddana', serif;
     --font-accent: 'Playfair Display', serif;
     --font-delivery: 'Kanit', sans-serif;
     --font-exceptional: 'Prompt', sans-serif;
@@ -101,8 +100,6 @@ header {
     flex-direction: column;
     align-items: center;
     justify-content: space-between;
-    border: 1px solid var(--white);
-    border-radius: 2px;
     width: 120px;
     height: 66px;
 }
@@ -195,19 +192,6 @@ header {
     display: flex;
     flex-direction: column;
     gap: 24px;
-}
-
-.exceptional-value {
-    font-family: var(--font-exceptional);
-    font-size: 14rem;
-    font-weight: 400;
-    text-transform: uppercase;
-    line-height: 1.05;
-    margin-bottom: 2rem;
-    position: absolute;
-    top: 10%;
-    left: 5%;
-    text-align: center;
 }
 
 .hero-heading {
