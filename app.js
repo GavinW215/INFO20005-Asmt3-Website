@@ -251,55 +251,28 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 
-// Load the navigation bar from index.html
 document.addEventListener('DOMContentLoaded', function () {
-    // Only apply to pages that are not index.html
-    if (!window.location.pathname.includes('index.html') && window.location.pathname !== '/') {
-        // Find the navigation placeholder in the page
-        const navPlaceholder = document.getElementById('nav-placeholder');
+    // Only run on pages that are not index.html
+    const isHome = window.location.pathname.endsWith('index.html') || window.location.pathname === '/';
+    if (isHome) return;
 
-        if (navPlaceholder) {
-            // Fetch the index.html page to extract its navigation
-            fetch('/index.html')
-                .then(response => response.text())
-                .then(data => {
-                    // Parse the HTML
-                    const parser = new DOMParser();
-                    const htmlDoc = parser.parseFromString(data, 'text/html');
+    // Fetch index.html and extract nav and footer
+    fetch('index.html')
+        .then(response => response.text())
+        .then(html => {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
 
-                    // Get the header from index.html
-                    const header = htmlDoc.getElementById('main-header');
+            // Nav
+            const nav = doc.querySelector('header');
+            if (nav && document.getElementById('nav-placeholder')) {
+                document.getElementById('nav-placeholder').innerHTML = nav.outerHTML;
+            }
 
-                    if (header) {
-                        // Clone the header to avoid reference issues
-                        const headerClone = header.cloneNode(true);
-
-                        // Insert the header
-                        navPlaceholder.innerHTML = headerClone.outerHTML;
-
-                        // Update active link based on current page
-                        const currentPage = window.location.pathname;
-                        const navLinks = navPlaceholder.querySelectorAll('.nav-menu a');
-
-                        navLinks.forEach(link => {
-                            link.classList.remove('active');
-
-                            if (currentPage.includes('shop.html') && link.href.includes('shop.html')) {
-                                link.classList.add('active');
-                            } else if (currentPage.includes('about.html') && link.href.includes('about.html')) {
-                                link.classList.add('active');
-                            } else if (currentPage.includes('contact.html') && link.href.includes('contact.html')) {
-                                link.classList.add('active');
-                            } else if (currentPage.includes('product.html') && link.href.includes('shop.html')) {
-                                // For product page, highlight the shop link
-                                link.classList.add('active');
-                            }
-                        });
-                    }
-                })
-                .catch(error => {
-                    console.error('Error loading navigation bar:', error);
-                });
-        }
-    }
-}); 
+            // Footer
+            const footer = doc.querySelector('footer');
+            if (footer && document.getElementById('footer-placeholder')) {
+                document.getElementById('footer-placeholder').innerHTML = footer.outerHTML;
+            }
+        });
+});

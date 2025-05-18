@@ -104,24 +104,6 @@ header {
     height: 66px;
 }
 
-.logo-text {
-    font-family: var(--font-logo);
-    text-align: center;
-    line-height: 1.63;
-}
-
-.logo-coffee {
-    font-size: 2.5rem;
-    line-height: 1.63;
-}
-
-.logo-bean,
-.logo-shop {
-    font-size: 2.5rem;
-    letter-spacing: 16%;
-    line-height: 1.63;
-}
-
 .nav-menu {
     display: flex;
     list-style: none;
@@ -410,23 +392,6 @@ footer {
     display: flex;
     flex-direction: column;
     gap: 2rem;
-}
-
-.footer-logo-box {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
-    border: 1px solid var(--footer-brown);
-    border-radius: 2px;
-    width: 120px;
-    height: 66px;
-}
-
-.footer-logo-text {
-    font-family: var(--font-logo);
-    text-align: center;
-    line-height: 1.63;
 }
 
 .footer-social {
