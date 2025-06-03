@@ -29,7 +29,7 @@
                 </ul>
             </nav>
             <div class="nav-icons">
-                <a href="#" class="nav-icon">
+                <a href="#" class="nav-icon" id="search-trigger">
                     <img src="public/images/Search.png" alt="Search" width="24" height="24">
                 </a>
                 <a href="#" class="nav-icon">
@@ -41,6 +41,9 @@
             </div>
         </div>
     </header>
+
+    <!-- Search Dropdown -->
+    <div id="search-dropdown-placeholder"></div>
 
     <main>
         <!-- Hero Section -->
@@ -60,16 +63,14 @@
 
         <!-- Info Section -->
         <section class="info-section">
-            <img src="public/images/info-image.jpg" alt="Premium coffee beans">
-            <div class="container">
+            <div class="info-flex">
+                <img src="public/images/info-image.jpg" alt="Premium coffee beans" class="info-img">
                 <div class="info-content">
-                    <h2 class="info-title">Premium quality coffee beans</h2>
+                    <h2 class="info-title">Premium Quality Coffee Beans</h2>
                     <p class="info-text">Coffee Bean Shop produces great value premium fresh roasted coffee beans online
-                        in
-                        Australia. Enjoy delicious coffee beans that are not bitter or acidic, complimented with
-                        terrific
-                        personal and professional customer service.</p>
-                    <a href="shop.html" class="info-link">Learn More 🡢</a>
+                        in Australia. Enjoy delicious coffee beans that are not bitter or acidic, complimented with
+                        terrific personal and professional customer service.</p>
+                    <a href="shop.html" class="info-link"><u>Learn More 🡢</u></a>
                 </div>
             </div>
         </section>
@@ -148,12 +149,7 @@
     <footer>
         <div class="footer-container">
             <div class="footer-logo">
-                <div class="footer-logo-wrapper">
-                    <img src="public\images\logo-footer.png" alt="Coffee Bean Shop Logo">
-                </div>
-                <div class="footer-social">
-                    <img src="public/images/Icons.png" alt="Social Icons">
-                </div>
+                <img src="public\images\logo-footer.png" alt="Coffee Bean Shop Logo">
             </div>
             <div class="footer-about">
                 <h3 class="footer-heading">About</h3>
@@ -179,7 +175,7 @@
                     <p>C01, 1 Campbell Pde<br>Manly Vale 2093</p>
                     <p>+61 0428-555-535</p>
                     <p>james@coffeebeanshop.com.au</p>
-                    <p>www.coffeebeanshop.com.au</p>
+                    <img src="public/images/Icons.png" alt="Social Icons" class="footer-icons">
                 </div>
             </div>
         </div>
