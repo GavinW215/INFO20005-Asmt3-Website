@@ -1,15 +1,240 @@
+// Navigation and Search component loading for non-home pages
+document.addEventListener('DOMContentLoaded', function () {
+    const isHome = window.location.pathname.endsWith('index.html') || window.location.pathname === '/';
+
+    if (!isHome) {
+        // Fetch index.html and extract nav and search components
+        fetch('index.html')
+            .then(response => response.text())
+            .then(html => {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+
+                // Nav
+                const nav = doc.querySelector('header');
+                if (nav && document.getElementById('nav-placeholder')) {
+                    document.getElementById('nav-placeholder').innerHTML = nav.outerHTML;
+                }
+
+                // Search component
+                const searchComponent = doc.querySelector('.search-overlay');
+                if (searchComponent && document.getElementById('search-component-placeholder')) {
+                    document.getElementById('search-component-placeholder').innerHTML = searchComponent.outerHTML;
+                }
+
+                // Footer
+                const footer = doc.querySelector('footer');
+                if (footer && document.getElementById('footer-placeholder')) {
+                    document.getElementById('footer-placeholder').innerHTML = footer.outerHTML;
+                }
+
+                // Initialize search after loading
+                initializeSearch();
+            })
+    } else {
+        // Initialize search directly for home page
+        initializeSearch();
+    }
+
+    function initializeSearch() {
+        // Search elements
+        const searchTrigger = document.getElementById('search-trigger');
+        const searchOverlay = document.getElementById('search-overlay');
+        const searchInput = document.getElementById('search-input');
+        const searchClose = document.getElementById('search-close');
+        const searchDropdown = document.getElementById('search-dropdown');
+        const searchResults = document.getElementById('search-results');
+        const searchTags = document.querySelectorAll('.search-tag');
+
+        // Sample product data for search suggestions
+        const products = [
+            { name: 'Daily Blend coffee beans' },
+            { name: 'Espresso coffee beans' },
+            { name: 'Mocca coffee beans' },
+            { name: 'Decaffeinated coffee beans' },
+            { name: 'Crema coffee beans' },
+            { name: 'Fairtrade coffee beans' },
+        ];
+
+        // Open search overlay
+        if (searchTrigger) {
+            searchTrigger.addEventListener('click', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                openSearch();
+            });
+        }
+
+        // Close search overlay
+        if (searchClose) {
+            searchClose.addEventListener('click', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                closeSearch();
+            });
+        }
+
+        // Close search logic based on user's preferred approach
+        if (searchOverlay && searchTrigger) {
+            window.onclick = function (event) {
+                if (!(event.target.closest('#search-trigger') || event.target.closest('.search-container'))) {
+                    if (searchOverlay.classList.contains('active')) {
+                        closeSearch();
+                    }
+                }
+            }
+        }
+
+        // Search input functionality
+        if (searchInput) {
+            searchInput.addEventListener('input', function () {
+                const query = this.value.trim().toLowerCase();
+
+                if (query.length > 0) {
+                    showSearchDropdown();
+                    updateSearchResults(query);
+                } else {
+                    hideSearchDropdown();
+                }
+            });
+
+            // Prevent form submission on Enter
+            searchInput.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    const query = this.value.trim();
+                    if (query) {
+                        // Redirect to shop page with search query
+                        window.location.href = `shop.html?search=${encodeURIComponent(query)}`;
+                    }
+                }
+            });
+        }
+
+        // Search tag click functionality
+        searchTags.forEach(tag => {
+            tag.addEventListener('click', function (e) {
+                e.stopPropagation();
+                const tagText = this.textContent.trim().toLowerCase();
+                searchInput.value = tagText;
+                updateSearchResults(tagText);
+                showSearchDropdown();
+            });
+        });
+
+        // ESC key to close search
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape' && searchOverlay.classList.contains('active')) {
+                closeSearch();
+            }
+        });
+
+        function openSearch() {
+            searchOverlay.classList.add('active');
+            document.body.classList.add('search-active');
+
+            // Focus on search input after animation
+            setTimeout(() => {
+                searchInput.focus();
+            }, 300);
+        }
+
+        function closeSearch() {
+            searchOverlay.classList.remove('active');
+            document.body.classList.remove('search-active');
+            hideSearchDropdown();
+            searchInput.value = '';
+        }
+
+        function showSearchDropdown() {
+            searchDropdown.classList.add('show');
+        }
+
+        function hideSearchDropdown() {
+            searchDropdown.classList.remove('show');
+        }
+
+        function updateSearchResults(query) {
+            // Filter products based on query (only name search)
+            const filteredProducts = products.filter(product =>
+                product.name.toLowerCase().includes(query)
+            );
+
+            // Clear previous results
+            searchResults.innerHTML = '';
+
+            // Add search results
+            filteredProducts.forEach(product => {
+                const resultItem = document.createElement('div');
+                resultItem.className = 'search-result-item';
+
+                // Highlight the matching text
+                const highlightedName = highlightText(product.name, query);
+
+                resultItem.innerHTML = `
+                    <div class="search-result-content">
+                        <div class="search-result-icon">
+                            <img src="public/images/Search.png" alt="Search" width="12" height="12">
+                        </div>
+                        <span class="search-result-text">${highlightedName}</span>
+                    </div>
+                `;
+
+                // Add click functionality
+                resultItem.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    window.location.href = `shop.html?search=${encodeURIComponent(product.name)}`;
+                });
+
+                searchResults.appendChild(resultItem);
+            });
+
+            // If no results found
+            if (filteredProducts.length === 0) {
+                const noResults = document.createElement('div');
+                noResults.className = 'search-result-item';
+                noResults.innerHTML = `
+                    <div class="search-result-content">
+                        <span class="search-result-text">No products found for "${query}"</span>
+                    </div>
+                `;
+                searchResults.appendChild(noResults);
+            }
+        }
+
+        function highlightText(text, query) {
+            if (!query) return text;
+
+            const regex = new RegExp(`(${query})`, 'gi');
+            return text.replace(regex, '<strong>$1</strong>');
+        }
+    }
+});
+
 // Shop page functionality
 document.addEventListener('DOMContentLoaded', function () {
-    // Elements
-    const searchInput = document.querySelector('.search-input');
-    const sortSelect = document.querySelector('.filter-select');
-    const priceFilters = document.querySelectorAll('input[name="price"]');
-    const roastFilters = document.querySelectorAll('input[name="roast"]');
-    const originFilters = document.querySelectorAll('input[name="origin"]');
-    const productCards = document.querySelectorAll('.shop-product-card');
+    // Check if we're on the shop page
+    const isShopPage = window.location.pathname.endsWith('shop.html');
 
-    // If not on shop page, don't execute rest of code that requires shop page elements
-    if (document.body.classList.contains('shop-page')) {
+    if (isShopPage) {
+        // Initialize shop functionality after a short delay to ensure elements are loaded
+        setTimeout(initializeShopFilters, 100);
+    }
+
+    function initializeShopFilters() {
+        // Elements (re-query after components are loaded)
+        const searchInput = document.querySelector('.search-input');
+        const sortSelect = document.querySelector('.filter-select');
+        const priceFilters = document.querySelectorAll('input[name="price"]');
+        const roastFilters = document.querySelectorAll('input[name="roast"]');
+        const originFilters = document.querySelectorAll('input[name="origin"]');
+        const productCards = document.querySelectorAll('.shop-product-card');
+
+        // If elements aren't loaded yet, try again
+        if (!searchInput || !sortSelect || priceFilters.length === 0) {
+            setTimeout(initializeShopFilters, 100);
+            return;
+        }
 
         // Parse URL parameters for search or category filters
         const urlParams = new URLSearchParams(window.location.search);
@@ -30,75 +255,81 @@ document.addEventListener('DOMContentLoaded', function () {
             }, 100);
         }
 
-        // Apply category parameter if present
+        // Apply category parameter if present (simplified - treat as search term)
         if (categoryParam) {
-            // Handle category filtering based on the category parameter
-            handleCategoryFilter(categoryParam);
-        }
-
-        // Function to handle category filtering
-        function handleCategoryFilter(category) {
-            const lowerCategory = category.toLowerCase();
-
-            // Find and check the corresponding filter based on category type
-            const filterElements = document.querySelectorAll('input[name="roast"], input[name="origin"]');
-            filterElements.forEach(filter => {
-                const filterLabel = filter.closest('label').textContent.trim().toLowerCase();
-                if (filterLabel.includes(lowerCategory.replace('n', ''))) { // Handle "colombian" vs "colombia"
-                    filter.checked = true;
+            const searchInputInterval = setInterval(() => {
+                const searchInput = document.querySelector('.search-input');
+                if (searchInput) {
+                    searchInput.value = categoryParam;
+                    filterProducts();
+                    clearInterval(searchInputInterval);
                 }
-            });
-
-            // Apply filters
-            filterProducts();
+            }, 100);
         }
 
         // Search functionality
-        // Listen for input on the dynamically loaded search input
-        document.addEventListener('input', function (e) {
-            if (e.target && e.target.classList.contains('search-bar-input')) {
-                filterProducts();
-            }
-        });
+        // Listen for input on the shop page search input
+        if (searchInput) {
+            searchInput.addEventListener('input', filterProducts);
+        }
 
 
         // Sort functionality
-        sortSelect.addEventListener('change', sortProducts);
+        if (sortSelect) {
+            sortSelect.addEventListener('change', sortProducts);
+        }
 
         // Filter change listeners
-        priceFilters.forEach(filter => {
-            filter.addEventListener('change', filterProducts);
-        });
+        if (priceFilters.length > 0) {
+            priceFilters.forEach(filter => {
+                filter.addEventListener('change', filterProducts);
+            });
+        }
 
-        roastFilters.forEach(filter => {
-            filter.addEventListener('change', filterProducts);
-        });
+        if (roastFilters.length > 0) {
+            roastFilters.forEach(filter => {
+                filter.addEventListener('change', filterProducts);
+            });
+        }
 
-        originFilters.forEach(filter => {
-            filter.addEventListener('change', filterProducts);
-        });
+        if (originFilters.length > 0) {
+            originFilters.forEach(filter => {
+                filter.addEventListener('change', filterProducts);
+            });
+        }
 
-        // Filter products based on search and filter selections
+        // Filter products based on search and filters
         function filterProducts() {
-            // Get filter values
+            // Get current search term from shop page search input
             const currentSearchInput = document.querySelector('.search-input');
             const searchTerm = currentSearchInput ? currentSearchInput.value.toLowerCase() : '';
-            const selectedPrice = document.querySelector('input[name="price"]:checked').closest('label').textContent.trim();
-            const selectedRoast = document.querySelector('input[name="roast"]:checked').closest('label').textContent.trim();
-            const selectedOrigin = document.querySelector('input[name="origin"]:checked').closest('label').textContent.trim();
 
-            productCards.forEach(card => {
+            // Get current filter values
+            const currentPriceFilter = document.querySelector('input[name="price"]:checked');
+            const currentRoastFilter = document.querySelector('input[name="roast"]:checked');
+            const currentOriginFilter = document.querySelector('input[name="origin"]:checked');
+
+            const selectedPrice = currentPriceFilter ? currentPriceFilter.closest('label').textContent.trim() : 'All Prices';
+            const selectedRoast = currentRoastFilter ? currentRoastFilter.closest('label').textContent.trim() : 'All Roasts';
+            const selectedOrigin = currentOriginFilter ? currentOriginFilter.closest('label').textContent.trim() : 'All Origins';
+
+            // Get current product cards
+            const currentProductCards = document.querySelectorAll('.shop-product-card');
+
+            currentProductCards.forEach(card => {
                 // Get product details
                 const title = card.querySelector('.shop-product-title').textContent.toLowerCase();
-                const price = parseFloat(card.querySelector('.shop-product-price').textContent.replace('$', ''));
+                const priceElement = card.querySelector('.shop-product-price');
+                const price = priceElement ? parseFloat(priceElement.textContent.replace('$', '')) : 0;
 
-                // Get tags
+                // Get tags (if they exist)
                 const tagElements = card.querySelectorAll('.product-tag');
                 const tags = Array.from(tagElements).map(tag => tag.textContent.toLowerCase());
 
-                // Check if product matches filters
+                // Check if product matches search
                 const matchesSearch = title.includes(searchTerm);
 
+                // Check if product matches price filter
                 let matchesPrice = true;
                 if (selectedPrice !== 'All Prices') {
                     if (selectedPrice === 'Under $20' && price >= 20) {
@@ -110,19 +341,21 @@ document.addEventListener('DOMContentLoaded', function () {
                     }
                 }
 
+                // Check if product matches roast filter
                 let matchesRoast = true;
                 if (selectedRoast !== 'All Roasts') {
                     const roastType = selectedRoast.toLowerCase();
                     matchesRoast = tags.includes(roastType);
                 }
 
+                // Check if product matches origin filter
                 let matchesOrigin = true;
                 if (selectedOrigin !== 'All Origins') {
                     const originType = selectedOrigin.toLowerCase();
                     matchesOrigin = tags.includes(originType);
                 }
 
-                // Show/hide product based on filter matches
+                // Show/hide product based on all criteria
                 if (matchesSearch && matchesPrice && matchesRoast && matchesOrigin) {
                     card.style.display = 'flex';
                 } else {
@@ -133,9 +366,16 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Sort products by price or name
         function sortProducts() {
-            const sortValue = sortSelect.value;
+            const currentSortSelect = document.querySelector('.filter-select');
+            if (!currentSortSelect) return;
+
+            const sortValue = currentSortSelect.value;
             const productsContainer = document.querySelector('.product-grid');
-            const productsArray = Array.from(productCards);
+            const currentProductCards = document.querySelectorAll('.shop-product-card');
+            const productsArray = Array.from(currentProductCards);
+
+            // Define featured products (Daily Blend, Espresso Roast, Mocha)
+            const featuredProducts = ['Daily Blend', 'Espresso Roast', 'Mocha coffee beans'];
 
             // Sort products based on selected option
             productsArray.sort((a, b) => {
@@ -144,7 +384,24 @@ document.addEventListener('DOMContentLoaded', function () {
                 const nameA = a.querySelector('.shop-product-title').textContent;
                 const nameB = b.querySelector('.shop-product-title').textContent;
 
-                if (sortValue === 'Price: Low to High') {
+                if (sortValue === 'Featured') {
+                    // Check if products are featured
+                    const aIsFeatured = featuredProducts.includes(nameA);
+                    const bIsFeatured = featuredProducts.includes(nameB);
+
+                    // If both are featured or both are not featured, maintain relative order
+                    if (aIsFeatured && bIsFeatured) {
+                        // Sort featured products by their order in the featuredProducts array
+                        return featuredProducts.indexOf(nameA) - featuredProducts.indexOf(nameB);
+                    } else if (aIsFeatured && !bIsFeatured) {
+                        return -1; // a comes first
+                    } else if (!aIsFeatured && bIsFeatured) {
+                        return 1; // b comes first
+                    } else {
+                        // Neither is featured, maintain alphabetical order
+                        return nameA.localeCompare(nameB);
+                    }
+                } else if (sortValue === 'Price: Low to High') {
                     return priceA - priceB;
                 } else if (sortValue === 'Price: High to Low') {
                     return priceB - priceA;
@@ -154,7 +411,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     return nameB.localeCompare(nameA);
                 }
 
-                // Default (Featured) - restore original order
+                // Default fallback
                 return 0;
             });
 
@@ -301,184 +558,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 
-document.addEventListener('DOMContentLoaded', function () {
-    // Only run on pages that are not index.html
-    const isHome = window.location.pathname.endsWith('index.html') || window.location.pathname === '/';
-    if (isHome) return;
-
-    // Fetch index.html and extract nav and footer
-    fetch('index.html')
-        .then(response => response.text())
-        .then(html => {
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(html, 'text/html');
-
-            // Nav
-            const nav = doc.querySelector('header');
-            if (nav && document.getElementById('nav-placeholder')) {
-                document.getElementById('nav-placeholder').innerHTML = nav.outerHTML;
-            }
-
-            // Footer
-            const footer = doc.querySelector('footer');
-            if (footer && document.getElementById('footer-placeholder')) {
-                document.getElementById('footer-placeholder').innerHTML = footer.outerHTML;
-            }
-        });
-});
-
-// Load and initialize search dropdown
-document.addEventListener('DOMContentLoaded', function () {
-    fetch('search-dropdown.html')
-        .then(response => response.text())
-        .then(html => {
-            const searchDropdownPlaceholder = document.getElementById('search-dropdown-placeholder');
-            if (searchDropdownPlaceholder) {
-                searchDropdownPlaceholder.innerHTML = html;
-
-                // Elements (get them after HTML is loaded)
-                const searchTrigger = document.getElementById('search-trigger');
-                const searchDropdown = document.getElementById('search-dropdown');
-                const searchInput = document.getElementById('search-input');
-                const initialContent = document.getElementById('initial-content');
-                const suggestionsContent = document.getElementById('suggestions-content');
-
-                // Sample search data - this would normally come from a database or API
-                const searchData = [
-                    { title: 'espresso beans', count: 12 },
-                    { title: 'espresso machine', count: 5 },
-                    { title: 'espresso grinder', count: 3 },
-                    { title: 'espresso cups', count: 8 },
-                    { title: 'medium roast', count: 15 },
-                    { title: 'light roast', count: 9 },
-                    { title: 'dark roast', count: 11 },
-                    { title: 'brazilian santos', count: 7 },
-                    { title: 'colombian coffee', count: 6 },
-                    { title: 'decaffeinated coffee', count: 4 },
-                    { title: 'organic coffee', count: 10 }
-                ];
-
-                // Recent search items (get them after HTML is loaded)
-                const recentItems = searchDropdown.querySelectorAll('.recent-item');
-
-                // Category tags (get them after HTML is loaded)
-                const categoryTags = searchDropdown.querySelectorAll('.category-tag');
-
-                // Toggle search dropdown
-                searchTrigger.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    searchDropdown.classList.toggle('active');
-                    document.body.classList.toggle('no-scroll', searchDropdown.classList.contains('active'));
-
-                    if (searchDropdown.classList.contains('active')) {
-                        // Focus on search input when dropdown is opened
-                        searchInput.focus();
-                    }
-                });
-
-                // Close dropdown when clicking outside
-                document.addEventListener('click', function (e) {
-                    if (!searchDropdown.contains(e.target) && e.target !== searchTrigger && !searchTrigger.contains(e.target)) {
-                        searchDropdown.classList.remove('active');
-                        document.body.classList.remove('no-scroll');
-                    }
-                });
-
-                // Handle search input
-                searchInput.addEventListener('input', function () {
-                    const searchTerm = this.value.toLowerCase().trim();
-
-                    if (searchTerm === '') {
-                        // Show initial content when search is empty
-                        initialContent.style.display = 'block';
-                        suggestionsContent.style.display = 'none';
-                    } else {
-                        // Filter search results based on search term
-                        const filteredResults = searchData.filter(item =>
-                            item.title.toLowerCase().startsWith(searchTerm)
-                        );
-
-                        // Show filtered results
-                        initialContent.style.display = 'none';
-                        suggestionsContent.style.display = 'block';
-
-                        // Clear previous suggestions
-                        while (suggestionsContent.children.length > 1) {
-                            suggestionsContent.removeChild(suggestionsContent.lastChild);
-                        }
-
-                        // Add new suggestions
-                        filteredResults.forEach(item => {
-                            const suggestionDiv = document.createElement('div');
-                            suggestionDiv.className = 'search-suggestion';
-                            suggestionDiv.innerHTML = `
-                                <div class="suggestion-icon">
-                                    <img src="public/images/Search.png" alt="Search Icon">
-                                </div>
-                                <div class="suggestion-content">
-                                    <div class="suggestion-title">${item.title}</div>
-                                </div>
-                                <div class="suggestion-count">${item.count} products</div>
-                            `;
-
-                            // Add click event to suggestion
-                            suggestionDiv.addEventListener('click', function () {
-                                window.location.href = `shop.html?search=${encodeURIComponent(item.title)}`;
-                            });
-
-                            suggestionsContent.appendChild(suggestionDiv);
-                        });
-
-                        // If no results found
-                        if (filteredResults.length === 0) {
-                            const noResults = document.createElement('div');
-                            noResults.textContent = 'No suggestions found';
-                            noResults.style.color = 'var(--cream)';
-                            noResults.style.textAlign = 'center';
-                            noResults.style.padding = '20px 0';
-                            suggestionsContent.appendChild(noResults);
-                        }
-                    }
-                });
-
-                // Handle recent item clicks
-                recentItems.forEach(item => {
-                    item.addEventListener('click', function () {
-                        const searchTerm = this.textContent.trim();
-                        window.location.href = `shop.html?search=${encodeURIComponent(searchTerm)}`;
-                    });
-                });
-
-                // Handle category tag clicks
-                categoryTags.forEach(tag => {
-                    tag.addEventListener('click', function () {
-                        const category = this.textContent.trim();
-                        window.location.href = `shop.html?category=${encodeURIComponent(category)}`;
-                    });
-                });
-
-                // Handle search suggestions clicks
-                // Need to use event delegation as suggestions are added dynamically
-                suggestionsContent.addEventListener('click', function (e) {
-                    const suggestionDiv = e.target.closest('.search-suggestion');
-                    if (suggestionDiv) {
-                        const title = suggestionDiv.querySelector('.suggestion-title').textContent.trim();
-                        window.location.href = `shop.html?search=${encodeURIComponent(title)}`;
-                    }
-                });
-
-                // Handle pressing Enter in search input
-                searchInput.addEventListener('keyup', function (e) {
-                    if (e.key === 'Enter') {
-                        const searchTerm = this.value.trim();
-                        if (searchTerm !== '') {
-                            window.location.href = `shop.html?search=${encodeURIComponent(searchTerm)}`;
-                        }
-                    }
-                });
-            }
-        });
-});
+// Old loading code removed - now handled by the unified component loading system above
 
 // Hide/show header on scroll
 document.addEventListener('DOMContentLoaded', function () {
@@ -496,6 +576,6 @@ document.addEventListener('DOMContentLoaded', function () {
             header.classList.remove('hidden');
         }
 
-        lastScrollTop = currentScrollTop <= 0 ? 0 : currentScrollTop; // Prevent negative values
+        lastScrollTop = currentScrollTop <= 0 ? 0 : currentScrollTop;
     });
 });

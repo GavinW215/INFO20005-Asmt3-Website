@@ -14,7 +14,7 @@
 </head>
 
 <body>
-    <div id="nav-placeholder"></div>
+
     <header id="main-header">
         <div class="header-container">
             <div class="logo">
@@ -40,10 +40,38 @@
                 </a>
             </div>
         </div>
-    </header>
 
-    <!-- Search Dropdown -->
-    <div id="search-dropdown-placeholder"></div>
+        <div id="search-component-placeholder"></div>
+
+        <!-- Search Overlay Component -->
+        <div class="search-overlay" id="search-overlay">
+            <div class="search-container">
+                <div class="search-bar">
+                    <input type="text" id="search-input" placeholder="Search coffee..." autocomplete="off">
+                    <button class="search-close-btn" id="search-close">
+                        <img src="public/images/Search.png" alt="Close Search" width="24" height="24">
+                    </button>
+                </div>
+
+                <!-- Search Suggestions Dropdown -->
+                <div class="search-dropdown" id="search-dropdown">
+                    <div class="search-suggestions">
+                        <div class="suggestions-header">SUGGESTIONS</div>
+                        <div class="search-tags">
+                            <span class="search-tag">Crema</span>
+                            <span class="search-tag">Decaf</span>
+                            <span class="search-tag">Espresso</span>
+                            <span class="search-tag">Mocca</span>
+                        </div>
+                        <div class="suggestions-divider"></div>
+                        <div class="search-results" id="search-results">
+                            <!-- Dynamic search results will be inserted here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
 
     <main>
         <!-- Hero Section -->
@@ -145,7 +173,6 @@
         </section>
     </main>
 
-    <div id="footer-placeholder"></div>
     <footer>
         <div class="footer-container">
             <div class="footer-logo">
