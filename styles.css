@@ -142,7 +142,7 @@ header.hidden {
     right: 0;
     width: 100%;
     height: 100vh;
-    background-color: var(--cream);
+    background-color: var(--light-brown);
     backdrop-filter: blur(12px);
     z-index: 200;
     opacity: 0;
@@ -153,6 +153,36 @@ header.hidden {
 .search-overlay.active {
     opacity: 1;
     visibility: visible;
+}
+
+.search-overlay-close {
+    position: absolute;
+    top: 2rem;
+    right: 2rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+    z-index: 201;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+}
+
+.search-overlay-close:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    transform: scale(1.1);
+}
+
+.search-overlay-close img {
+    opacity: 0.8;
+    filter: brightness(0) invert(1);
+    /* Make the X white */
 }
 
 .search-container {
@@ -324,9 +354,7 @@ header.hidden {
 }
 
 /* Hide scrollbar when search is active */
-body.search-active {
-    overflow: hidden;
-}
+
 
 /* Responsive search */
 @media (max-width: 992px) {
@@ -357,6 +385,18 @@ body.search-active {
 
     .search-suggestions {
         padding: 16px;
+    }
+
+    .search-overlay-close {
+        top: 1rem;
+        right: 1rem;
+        width: 40px;
+        height: 40px;
+    }
+
+    .search-overlay-close img {
+        width: 20px;
+        height: 20px;
     }
 }
 
@@ -1006,7 +1046,7 @@ footer {
 .product-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 2rem;
+    gap: 3rem 2.5rem;
 }
 
 .shop-product-card {
@@ -1082,6 +1122,7 @@ footer {
 
     .product-grid {
         grid-template-columns: repeat(2, 1fr);
+        gap: 2.5rem 2rem;
     }
 }
 
@@ -1092,6 +1133,7 @@ footer {
 
     .product-grid {
         grid-template-columns: repeat(1, 1fr);
+        gap: 2rem;
     }
 }
 
@@ -1493,5 +1535,134 @@ footer {
 @media (max-width: 1200px) {
     .info-content {
         max-width: 460px;
+    }
+}
+
+/* Search Results Page Styles */
+.search-results-header {
+    padding: 2rem 0;
+    background-color: var(--light-brown);
+    margin-top: 90px;
+}
+
+.search-results-container {
+    max-width: 1312px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    text-align: center;
+}
+
+.search-results-title {
+    font-family: var(--font-accent);
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 1.5rem;
+    color: var(--dark-brown);
+}
+
+.search-results-bar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.search-results-input {
+    flex: 1;
+    padding: 1rem 1.5rem;
+    background-color: var(--cream);
+    border: 2px solid var(--dark-brown);
+    border-radius: 8px;
+    color: var(--dark-brown);
+    font-family: var(--font-body);
+    font-size: 1.1rem;
+    outline: none;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.search-results-input:focus {
+    border-color: var(--medium-brown);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.search-results-btn {
+    background-color: var(--dark-brown);
+    border: none;
+    border-radius: 8px;
+    padding: 1rem 1.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.search-results-btn:hover {
+    background-color: var(--medium-brown);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.products-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    font-family: var(--font-body);
+}
+
+#search-query-display {
+    font-weight: bold;
+    font-size: 24px;
+    color: var(--dark-brown);
+}
+
+#search-results-count {
+    color: var(--dark-brown);
+    font-weight: normal;
+    font-size: 18px;
+}
+
+.search-results-section {
+    padding: 2rem 0 6rem;
+}
+
+.search-results-content {
+    max-width: 1312px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.no-results {
+    text-align: center;
+    padding: 4rem 2rem;
+}
+
+.no-results h3 {
+    font-family: var(--font-accent);
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    color: var(--dark-brown);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .search-results-bar {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .search-results-input {
+        width: 100%;
+    }
+
+    .search-results-info {
+        flex-direction: column;
+        gap: 0.5rem;
     }
 }

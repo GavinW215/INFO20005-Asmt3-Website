@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Kanit:wght@300&family=Peddana&family=Playfair+Display:wght@400;700&family=Source+Serif+Pro:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <title>Search Results - Coffee Bean Shop</title>
+</head>
+
+<body>
+    <header>
+        <div id="nav-placeholder"></div>
+        <div id="search-component-placeholder"></div>
+    </header>
+
+    <main>
+        <!-- Search Results Header -->
+        <div class="search-results-header">
+            <div class="search-results-container">
+                <h1 class="search-results-title">Search Results</h1>
+                <div class="search-results-bar">
+                    <input type="text" id="search-results-input" placeholder="Search coffee..."
+                        class="search-results-input">
+                    <button class="search-results-btn" id="search-results-btn">
+                        <img src="public/images/Search.png" alt="Search" width="20" height="20">
+                    </button>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Search Results Section -->
+        <section class="search-results-section">
+            <div class="search-results-content">
+                <div class="shop-container">
+                    <div class="filters-container">
+                        <h2 class="filter-title">Filters</h2>
+
+                        <div class="filter-group">
+                            <h3 class="filter-group-title">Sort By</h3>
+                            <select class="filter-select" id="search-sort-select">
+                                <option>Featured</option>
+                                <option>Price: Low to High</option>
+                                <option>Price: High to Low</option>
+                                <option>Name: A to Z</option>
+                                <option>Name: Z to A</option>
+                            </select>
+                        </div>
+
+                        <div class="filter-group">
+                            <h3 class="filter-group-title">Price Range</h3>
+                            <ul class="filter-options">
+                                <li><label><input type="radio" name="search-price" checked> All Prices</label></li>
+                                <li><label><input type="radio" name="search-price"> Under $20</label></li>
+                                <li><label><input type="radio" name="search-price"> $20 - $30</label></li>
+                                <li><label><input type="radio" name="search-price"> Over $30</label></li>
+                            </ul>
+                        </div>
+
+                        <div class="filter-group">
+                            <h3 class="filter-group-title">Roast Level</h3>
+                            <ul class="filter-options">
+                                <li><label><input type="radio" name="search-roast" checked> All Roasts</label></li>
+                                <li><label><input type="radio" name="search-roast"> Light</label></li>
+                                <li><label><input type="radio" name="search-roast"> Medium</label></li>
+                                <li><label><input type="radio" name="search-roast"> Dark</label></li>
+                            </ul>
+                        </div>
+
+                        <div class="filter-group">
+                            <h3 class="filter-group-title">Origin</h3>
+                            <ul class="filter-options">
+                                <li><label><input type="radio" name="search-origin" checked> All Origins</label></li>
+                                <li><label><input type="radio" name="search-origin"> Colombia</label></li>
+                                <li><label><input type="radio" name="search-origin"> Brazil</label></li>
+                                <li><label><input type="radio" name="search-origin"> Ethiopia</label></li>
+                                <li><label><input type="radio" name="search-origin"> Guatemala</label></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="products-container">
+                        <div class="products-header">
+                            <span id="search-query-display"></span>
+                            <span id="search-results-count"></span>
+                        </div>
+                        <div class="product-grid" id="search-product-grid">
+                            <!-- Products will be dynamically inserted here -->
+                            <div class="shop-product-card">
+                                <a href="product.html" class="product-link">
+                                    <div class="shop-product-image">
+                                        <img src="public/images/daily-blend.jpg" alt="Daily Blend coffee beans">
+                                    </div>
+                                    <h3 class="shop-product-title">Daily Blend</h3>
+                                    <div class="shop-product-rating">
+                                        <img src="public/images/star.svg" alt="Star" class="star-icon">
+                                        <span>4.5</span>
+                                    </div>
+                                    <p class="shop-product-price">$21.97</p>
+                                    <div class="shop-product-tags">
+                                        <span class="product-tag">medium</span>
+                                        <span class="product-tag">colombia</span>
+                                    </div>
+                                </a>
+                            </div>
+
+                            <div class="shop-product-card">
+                                <a href="product.html" class="product-link">
+                                    <div class="shop-product-image">
+                                        <img src="public/images/espresso.jpg" alt="Espresso coffee beans">
+                                    </div>
+                                    <h3 class="shop-product-title">Espresso Roast</h3>
+                                    <div class="shop-product-rating">
+                                        <img src="public/images/star.svg" alt="Star" class="star-icon">
+                                        <span>4.8</span>
+                                    </div>
+                                    <p class="shop-product-price">$23.97</p>
+                                    <div class="shop-product-tags">
+                                        <span class="product-tag">dark</span>
+                                        <span class="product-tag">brazil</span>
+                                    </div>
+                                </a>
+                            </div>
+
+                            <div class="shop-product-card">
+                                <a href="product.html" class="product-link">
+                                    <div class="shop-product-image">
+                                        <img src="public/images/decaf.jpg" alt="Decaffeinated coffee beans">
+                                    </div>
+                                    <h3 class="shop-product-title">Decaf Blend</h3>
+                                    <div class="shop-product-rating">
+                                        <img src="public/images/star.svg" alt="Star" class="star-icon">
+                                        <span>4.2</span>
+                                    </div>
+                                    <p class="shop-product-price">$31.81</p>
+                                    <div class="shop-product-tags">
+                                        <span class="product-tag">light</span>
+                                        <span class="product-tag">ethiopia</span>
+                                    </div>
+                                </a>
+                            </div>
+
+                            <div class="shop-product-card">
+                                <a href="product.html" class="product-link">
+                                    <div class="shop-product-image">
+                                        <img src="public/images/crema.jpg" alt="Crema coffee beans">
+                                    </div>
+                                    <h3 class="shop-product-title">Crema</h3>
+                                    <div class="shop-product-rating">
+                                        <img src="public/images/star.svg" alt="Star" class="star-icon">
+                                        <span>4.7</span>
+                                    </div>
+                                    <p class="shop-product-price">$25.87</p>
+                                    <div class="shop-product-tags">
+                                        <span class="product-tag">medium</span>
+                                        <span class="product-tag">guatemala</span>
+                                    </div>
+                                </a>
+                            </div>
+
+                            <div class="shop-product-card">
+                                <a href="product.html" class="product-link">
+                                    <div class="shop-product-image">
+                                        <img src="public/images/daily-blend.jpg" alt="Mocha coffee beans">
+                                    </div>
+                                    <h3 class="shop-product-title">Mocha coffee beans</h3>
+                                    <div class="shop-product-rating">
+                                        <img src="public/images/star.svg" alt="Star" class="star-icon">
+                                        <span>4.6</span>
+                                    </div>
+                                    <p class="shop-product-price">$28.97</p>
+                                    <div class="shop-product-tags">
+                                        <span class="product-tag">light</span>
+                                        <span class="product-tag">colombia</span>
+                                    </div>
+                                </a>
+                            </div>
+
+                            <div class="shop-product-card">
+                                <a href="product.html" class="product-link">
+                                    <div class="shop-product-image">
+                                        <img src="public/images/espresso.jpg" alt="Fairtrade coffee beans">
+                                    </div>
+                                    <h3 class="shop-product-title">Fairtrade coffee beans</h3>
+                                    <div class="shop-product-rating">
+                                        <img src="public/images/star.svg" alt="Star" class="star-icon">
+                                        <span>4.9</span>
+                                    </div>
+                                    <p class="shop-product-price">$29.96</p>
+                                    <div class="shop-product-tags">
+                                        <span class="product-tag">dark</span>
+                                        <span class="product-tag">brazil</span>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- No Results Message -->
+                        <div class="no-results" id="no-results" style="display: none;">
+                            <h3>No products found</h3>
+                            <a href="shop.html" class="btn btn-primary">Browse All Products</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div id="footer-placeholder"></div>
+    <script src="app.js"></script>
+</body>
+
+</html>
