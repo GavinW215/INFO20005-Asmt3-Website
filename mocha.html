@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Kanit:wght@300&family=Peddana&family=Playfair+Display:wght@400;700&family=Source+Serif+Pro:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <title>Mocha Coffee Beans - Coffee Bean Shop</title>
+</head>
+
+<body>
+    <header>
+        <div id="nav-placeholder"></div>
+        <div id="search-component-placeholder"></div>
+    </header>
+
+    <main>
+        <div class="breadcrumb-container">
+            <div class="breadcrumb">
+                <a href="index.html">Home</a> / <a href="shop.html">Shop</a> / <span>Mocha Coffee Beans</span>
+            </div>
+        </div>
+
+        <section class="product-detail-section">
+            <div class="product-detail-container">
+                <div class="product-detail-image">
+                    <img src="public/images/mocha.jpg" alt="Mocha coffee beans">
+                </div>
+                <div class="product-detail-info">
+                    <h1 class="product-detail-title">Mocha Coffee Beans</h1>
+
+                    <div class="product-detail-price">$28.97</div>
+
+                    <div class="product-detail-description">
+                        <p>What would you say about a coffee that is full of body, has a rounded flavour and finished
+                            off with a hint of dark chocolate? Thats exactly what you have here with Coffee Beans Shop
+                            Mocha - okay, so there isn't actually any dark chocolate in this coffee bean, but it
+                            perfectly describes the flavour of this delicious coffee bean. You will find this coffee as
+                            a medium roast, which means a good amount of the coffee origin shows through. Its won awards
+                            in various competitions in Australia over the years as a complex blend. </p>
+                    </div>
+
+                    <div class="product-detail-scale">
+                        <img src="public/images/Mocha_scale.jpg" alt="scale" class="scale-image">
+                    </div>
+
+                    <div class="product-detail-form">
+                        <div class="product-options">
+                            <div class="option-group">
+                                <label for="size">Size:</label>
+                                <select id="size" class="option-select">
+                                    <option value="250g">250g - $28.97</option>
+                                    <option value="500g">500g - $53.97</option>
+                                    <option value="1kg">1kg - $102.97</option>
+                                </select>
+                            </div>
+
+                            <div class="option-group">
+                                <label for="grind">Grind:</label>
+                                <select id="grind" class="option-select">
+                                    <option value="whole-bean">Whole Bean</option>
+                                    <option value="fine">Fine</option>
+                                    <option value="medium">Medium</option>
+                                    <option value="coarse">Coarse</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="quantity-selector">
+                            <label for="quantity">Quantity:</label>
+                            <div class="quantity-controls">
+                                <button class="quantity-btn decrease">-</button>
+                                <input type="number" id="quantity" value="1" min="1" max="10">
+                                <button class="quantity-btn increase">+</button>
+                            </div>
+                        </div>
+
+                        <button class="add-to-cart-btn">Add to Cart</button>
+                    </div>
+
+                    <div class="product-detail-meta">
+                        <div class="meta-item">
+                            <span class="meta-label">Packaging:</span>
+                            <span class="meta-value">Packed in individual 1kg foil lined coffee bags fitted with one way
+                                freshness valves. Coffee bags are packed inside cartons for ultimate protection and
+                                presentation.</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-label">Shipping:</span>
+                            <span class="meta-value">Free shipping on orders over $100</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="product-tabs-section">
+            <div class="product-tabs-container">
+                <div class="product-tabs">
+                    <button class="tab-btn active" data-tab="description">Description</button>
+                    <button class="tab-btn" data-tab="details">Additional Information</button>
+                </div>
+
+                <div class="tab-content active" id="description">
+                    <h3>About Mocha Coffee Beans</h3>
+                    <p>What would you say about a coffee that is full of body, has a rounded flavour and finished off with a hint of dark chocolate? Thats exactly what you have here with Coffee Beans Shop Mocha - okay, so there isn't actually any dark chocolate in this coffee bean, but it perfectly describes the flavour of this delicious coffee bean. </p>
+                    <p>At home, or while at the office, I most enjoy this coffee as a plunger or other manual brewing process, like the Aeropress, pour-over, syphon of drip - but I have plenty of cafe customers who have discovered Mocha coffee and serve it as their staple core coffee, and their customers just absolutely love it!</p>
+                    <p>You will find this coffee as a medium roast, which means a good amount of the coffee origin shows through. Its won awards in various competitions in Australia over the years as a complex blend. </p>
+                </div>
+
+                <div class="tab-content" id="details">
+                    <h3>Product Specifications</h3>
+                    <table class="specifications-table">
+                        <tr>
+                            <th>Weight</th>
+                            <td>250g, 500g, or 1kg options</td>
+                        </tr>
+                        <tr>
+                            <th>Roast Level</th>
+                            <td>Medium</td>
+                        </tr>
+                        <tr>
+                            <th>Origin</th>
+                            <td>Colombia</td>
+                        </tr>
+                        <tr>
+                            <th>Tasting Notes</th>
+                            <td>Rich, Rounded, Chocolaty</td>
+                        </tr>
+                        <tr>
+                            <th>Recommended Use</th>
+                            <td>Aeropress, Pour-over, Syphon</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div id="footer-placeholder"></div>
+    <script src="app.js"></script>
+</body>
+
+</html>
