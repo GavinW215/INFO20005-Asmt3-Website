@@ -30,10 +30,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 // Initialize search after loading
                 initializeSearch();
+                // Initialize cart functionality
+                initializeCart();
             })
     } else {
         // Initialize search directly for home page
         initializeSearch();
+        // Initialize cart functionality
+        initializeCart();
     }
 
     function initializeSearch() {
@@ -200,6 +204,260 @@ document.addEventListener('DOMContentLoaded', function () {
 
     }
 });
+
+// Cart functionality
+let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+function initializeCart() {
+    updateCartDisplay();
+    updateCartCount();
+
+    // Handle add to cart button on product pages
+    const addToCartBtn = document.querySelector('.add-to-cart-btn');
+    if (addToCartBtn) {
+        addToCartBtn.addEventListener('click', function () {
+            // Get product details
+            const productName = document.querySelector('.product-detail-title').textContent.trim();
+            const priceText = document.querySelector('.product-detail-price').textContent;
+            const basePrice = parseFloat(priceText.replace('$', ''));
+
+            // Get selected options
+            const sizeSelect = document.getElementById('size');
+            const grindSelect = document.getElementById('grind');
+            const quantityInput = document.getElementById('quantity');
+
+            const selectedSize = sizeSelect.value;
+            const selectedGrind = grindSelect.value;
+            const quantity = parseInt(quantityInput.value);
+
+            let price = basePrice;
+
+            // Get product image
+            const productImage = document.querySelector('.product-detail-image img').src;
+
+            // Create product object
+            const product = {
+                name: productName,
+                size: selectedSize,
+                grind: selectedGrind,
+                price: price,
+                quantity: quantity,
+                image: productImage
+            };
+
+            // Add to cart
+            addToCart(product);
+        });
+    }
+
+    // Handle checkout button
+    const checkoutBtn = document.getElementById('checkout-btn');
+    if (checkoutBtn) {
+        checkoutBtn.addEventListener('click', function () {
+            if (cart.length === 0) {
+                alert('Your cart is empty!');
+                return;
+            }
+            // Redirect to checkout page (to be implemented)
+            window.location.href = 'checkout.html';
+        });
+    }
+}
+
+// Function to add item to cart
+function addToCart(product) {
+    // Check if item already exists in cart
+    const existingItem = cart.find(item =>
+        item.name === product.name &&
+        item.size === product.size &&
+        item.grind === product.grind
+    );
+
+    if (existingItem) {
+        existingItem.quantity += product.quantity;
+    } else {
+        cart.push(product);
+    }
+
+    // Save to localStorage
+    localStorage.setItem('cart', JSON.stringify(cart));
+    updateCartCount();
+
+    // Show confirmation message
+    showNotification('Product added to cart!');
+}
+
+// Function to update cart display
+function updateCartDisplay() {
+    const cartItemsContainer = document.getElementById('cart-items');
+    const emptyCartDiv = document.getElementById('empty-cart');
+
+    if (!cartItemsContainer) return; // Not on cart page
+
+    if (cart.length === 0) {
+        cartItemsContainer.style.display = 'none';
+        emptyCartDiv.style.display = 'block';
+        updateSummary();
+        return;
+    }
+
+    cartItemsContainer.style.display = 'block';
+    emptyCartDiv.style.display = 'none';
+
+    cartItemsContainer.innerHTML = '';
+
+    cart.forEach((item, index) => {
+        const cartItemDiv = document.createElement('div');
+        cartItemDiv.className = 'cart-item';
+
+        cartItemDiv.innerHTML = `
+            <div class="cart-item-info">
+                <img src="${item.image}" alt="${item.name}" class="cart-item-image clickable-item" onclick="goToProductDetail('${item.name}')">
+                <div class="cart-item-details">
+                    <h3 class="clickable-item" onclick="goToProductDetail('${item.name}')">${item.name}</h3>
+                    <p>Size: ${item.size} | Grind: ${item.grind}</p>
+                </div>
+            </div>
+            <div class="cart-item-price">$${item.price.toFixed(2)}</div>
+            <div class="cart-item-quantity">
+                <button class="quantity-btn-cart" onclick="updateQuantity(${index}, -1)">-</button>
+                <input type="number" value="${item.quantity}" min="1" max="10" class="quantity-input-cart" 
+                       onchange="updateQuantityInput(${index}, this.value)">
+                <button class="quantity-btn-cart" onclick="updateQuantity(${index}, 1)">+</button>
+            </div>
+            <div class="cart-item-total">$${(item.price * item.quantity).toFixed(2)}</div>
+            <div class="cart-item-remove">
+                <img src="public/images/X.png" alt="Remove" class="remove-btn-icon" onclick="removeFromCart(${index})">
+            </div>
+        `;
+
+        cartItemsContainer.appendChild(cartItemDiv);
+    });
+
+    updateSummary();
+}
+
+// Function to go to product detail page
+function goToProductDetail(productName) {
+    // Enhanced mapping from product name to detail page - handles various naming conventions
+    const productPages = {
+        'Daily Blend coffee beans': 'daily_blend.html',
+        'Espresso coffee beans': 'espresso.html',
+        'Mocha coffee beans': 'mocha.html',
+        'Decaffeinated coffee beans': 'decaf.html',
+        'Decaf coffee beans': 'decaf.html',
+        'Crema coffee beans': 'crema.html',
+        'Fairtrade coffee beans': 'fairtrade.html'
+    };
+
+    // Try direct mapping first
+    let pageUrl = productPages[productName];
+
+    // If not found, try normalized search (lowercase, remove "coffee beans" suffix)
+    if (!pageUrl) {
+        const normalizedName = productName.toLowerCase().replace(/\s*coffee\s*beans\s*$/i, '').trim();
+
+        // Check if normalized name matches any key
+        for (const [key, value] of Object.entries(productPages)) {
+            const normalizedKey = key.toLowerCase().replace(/\s*coffee\s*beans\s*$/i, '').trim();
+            if (normalizedKey === normalizedName) {
+                pageUrl = value;
+                break;
+            }
+        }
+    }
+
+    if (pageUrl) {
+        window.location.href = pageUrl;
+    } else {
+        console.warn(`No page found for product: ${productName}`);
+    }
+}
+
+// Function to update quantity
+function updateQuantity(index, change) {
+    const newQuantity = cart[index].quantity + change;
+
+    if (newQuantity > 0 && newQuantity <= 10) {
+        cart[index].quantity = newQuantity;
+        localStorage.setItem('cart', JSON.stringify(cart));
+        updateCartDisplay();
+        updateCartCount();
+    }
+}
+
+// Function to update quantity from input
+function updateQuantityInput(index, value) {
+    const quantity = parseInt(value);
+
+    if (quantity > 0 && quantity <= 10) {
+        cart[index].quantity = quantity;
+        localStorage.setItem('cart', JSON.stringify(cart));
+        updateCartDisplay();
+        updateCartCount();
+    }
+}
+
+// Function to remove item from cart
+function removeFromCart(index) {
+    cart.splice(index, 1);
+    localStorage.setItem('cart', JSON.stringify(cart));
+    updateCartDisplay();
+    updateCartCount();
+    showNotification('Item removed from cart');
+}
+
+// Function to update order summary
+function updateSummary() {
+    const subtotal = cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+    const shipping = 0; // Free shipping as requested
+    const total = subtotal + shipping;
+
+    const subtotalElement = document.getElementById('subtotal');
+    const shippingElement = document.getElementById('shipping');
+    const totalElement = document.getElementById('total');
+
+    if (subtotalElement) subtotalElement.textContent = `$${subtotal.toFixed(2)}`;
+    if (shippingElement) shippingElement.textContent = shipping === 0 ? 'Free' : `$${shipping.toFixed(2)}`;
+    if (totalElement) totalElement.textContent = `$${total.toFixed(2)}`;
+}
+
+// Function to update cart count in header
+function updateCartCount() {
+    const cartCountElements = document.querySelectorAll('.cart-count');
+    const totalItems = cart.reduce((total, item) => total + item.quantity, 0);
+
+    cartCountElements.forEach(element => {
+        element.textContent = totalItems;
+        element.style.display = totalItems > 0 ? 'block' : 'none';
+    });
+}
+
+// Function to show notification
+function showNotification(message) {
+    // Create notification element
+    const notification = document.createElement('div');
+    notification.className = 'cart-notification';
+    notification.textContent = message;
+    notification.style.cssText = `
+        position: fixed;
+        top: 100px;
+        right: 20px;
+        background-color: var(--dark-brown);
+        color: var(--white);
+        padding: 1rem 2rem;
+        border-radius: 4px;
+        z-index: 1000;
+        animation: slideIn 0.3s ease;
+    `;
+
+    document.body.appendChild(notification);
+
+    // Remove after 3 seconds
+    setTimeout(() => {
+        notification.remove();
+    }, 3000);
+}
 
 // Shop page functionality
 document.addEventListener('DOMContentLoaded', function () {
@@ -744,24 +1002,24 @@ document.addEventListener('DOMContentLoaded', function () {
     const tabButtons = document.querySelectorAll('.tab-btn');
     const tabContents = document.querySelectorAll('.tab-content');
 
-    if (tabButtons.length === 0) return; // Not on product detail page
+    if (tabButtons.length > 0) {
+        tabButtons.forEach(button => {
+            button.addEventListener('click', function () {
+                // Remove active class from all buttons and contents
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+                tabContents.forEach(content => content.classList.remove('active'));
 
-    tabButtons.forEach(button => {
-        button.addEventListener('click', function () {
-            // Remove active class from all buttons and contents
-            tabButtons.forEach(btn => btn.classList.remove('active'));
-            tabContents.forEach(content => content.classList.remove('active'));
+                // Add active class to clicked button
+                this.classList.add('active');
 
-            // Add active class to clicked button
-            this.classList.add('active');
-
-            // Get the tab to activate
-            const tabToActivate = this.getAttribute('data-tab');
-            document.getElementById(tabToActivate).classList.add('active');
+                // Get the tab to activate
+                const tabToActivate = this.getAttribute('data-tab');
+                document.getElementById(tabToActivate).classList.add('active');
+            });
         });
-    });
+    }
 
-    // Quantity controls
+    // Quantity controls for product detail page only (not cart page)
     const decreaseBtn = document.querySelector('.quantity-btn.decrease');
     const increaseBtn = document.querySelector('.quantity-btn.increase');
     const quantityInput = document.querySelector('#quantity');
@@ -801,23 +1059,6 @@ document.addEventListener('DOMContentLoaded', function () {
             const selectedOption = this.options[this.selectedIndex];
             const priceText = selectedOption.textContent.split('-')[1].trim();
             priceDisplay.textContent = priceText;
-        });
-    }
-
-    // Add to cart button
-    const addToCartBtn = document.querySelector('.add-to-cart-btn');
-
-    if (addToCartBtn) {
-        addToCartBtn.addEventListener('click', function () {
-            const productTitle = document.querySelector('.product-detail-title').textContent;
-            const size = document.querySelector('#size').value;
-            const grind = document.querySelector('#grind').value;
-            const quantity = document.querySelector('#quantity').value;
-            const price = document.querySelector('.product-detail-price').textContent;
-
-            // In a real app, this would send data to cart system
-            // For demo purposes we'll just show an alert
-            alert(`Added to cart: ${quantity}x ${productTitle} (${size}, ${grind}) - ${price}`);
         });
     }
 });
