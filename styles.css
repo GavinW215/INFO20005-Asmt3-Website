@@ -887,6 +887,11 @@ footer {
     display: none;
 }
 
+/* Hide mobile filter sidebar overlay on desktop */
+.filter-sidebar-overlay {
+    display: none;
+}
+
 
 
 /* Product Detail Page */
@@ -1805,7 +1810,7 @@ footer {
 }
 
 /* ===================== MOBILE ===================== */
-@media (max-width: 390px) {
+@media (max-width: 768px) {
 
     /* General resets */
     body {
