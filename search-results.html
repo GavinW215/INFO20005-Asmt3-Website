@@ -13,7 +13,7 @@
     <title>Search Results - Coffee Bean Shop</title>
 </head>
 
-<body>
+<body class="search-results-page">
     <header>
         <div id="nav-placeholder"></div>
         <div id="search-component-placeholder"></div>
@@ -32,6 +32,62 @@
                     </button>
                 </div>
 
+            </div>
+        </div>
+
+        <!-- Mobile Filter Trigger -->
+        <button class="mobile-filter-trigger" id="mobile-filter-trigger"></button>
+
+        <!-- Filter Sidebar Overlay -->
+        <div class="filter-sidebar-overlay" id="filter-sidebar-overlay">
+            <div class="filter-sidebar-header">
+                <span class="filter-sidebar-title">Filters</span>
+                <button class="filter-sidebar-close" id="filter-sidebar-close"></button>
+            </div>
+            <div class="filter-sidebar-content">
+                <h2 class="filter-title">Filters</h2>
+
+                <div class="filter-group">
+                    <h3 class="filter-group-title">Sort By</h3>
+                    <select class="filter-select" id="mobile-search-sort-select">
+                        <option>Featured</option>
+                        <option>Price: Low to High</option>
+                        <option>Price: High to Low</option>
+                        <option>Name: A to Z</option>
+                        <option>Name: Z to A</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <h3 class="filter-group-title">Price Range</h3>
+                    <ul class="filter-options">
+                        <li><label><input type="radio" name="mobile-search-price" checked> All Prices</label></li>
+                        <li><label><input type="radio" name="mobile-search-price"> Under $20</label></li>
+                        <li><label><input type="radio" name="mobile-search-price"> $20 - $30</label></li>
+                        <li><label><input type="radio" name="mobile-search-price"> Over $30</label></li>
+                    </ul>
+                </div>
+
+                <div class="filter-group">
+                    <h3 class="filter-group-title">Roast Level</h3>
+                    <ul class="filter-options">
+                        <li><label><input type="radio" name="mobile-search-roast" checked> All Roasts</label></li>
+                        <li><label><input type="radio" name="mobile-search-roast"> Light</label></li>
+                        <li><label><input type="radio" name="mobile-search-roast"> Medium</label></li>
+                        <li><label><input type="radio" name="mobile-search-roast"> Dark</label></li>
+                    </ul>
+                </div>
+
+                <div class="filter-group">
+                    <h3 class="filter-group-title">Origin</h3>
+                    <ul class="filter-options">
+                        <li><label><input type="radio" name="mobile-search-origin" checked> All Origins</label></li>
+                        <li><label><input type="radio" name="mobile-search-origin"> Colombia</label></li>
+                        <li><label><input type="radio" name="mobile-search-origin"> Brazil</label></li>
+                        <li><label><input type="radio" name="mobile-search-origin"> Ethiopia</label></li>
+                        <li><label><input type="radio" name="mobile-search-origin"> Guatemala</label></li>
+                    </ul>
+                </div>
             </div>
         </div>
 

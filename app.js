@@ -23,7 +23,13 @@ document.addEventListener('DOMContentLoaded', function () {
     // Initialize UI enhancements
     initializeProductInteractions();
     initializeProductDetailTabs();
-    initializeScrollHeader();
+    initializeMobileFilterSidebar();
+
+    const isHome = window.location.pathname.endsWith('index.html') || window.location.pathname === '/';
+    if (isHome) {
+        initializeScrollHeader();
+        initializeMobileMenu();
+    }
 });
 
 // Component loading for non-home pages
@@ -55,8 +61,10 @@ function initializeComponents() {
                     document.getElementById('footer-placeholder').innerHTML = footer.outerHTML;
                 }
 
-                // Initialize search AFTER components are loaded
+                // Initialize all navbar-related functionality AFTER components are loaded
                 initializeSearch();
+                initializeMobileMenu();
+                initializeScrollHeader();
             })
             .catch(error => console.warn('Failed to load components:', error));
     } else {
@@ -195,13 +203,13 @@ function initializeSearch() {
             resultItem.className = 'search-result-item';
 
             resultItem.innerHTML = `
-                <div class="search-result-content">
-                    <div class="search-result-icon">
-                        <img src="public/images/Search.png" alt="Search" width="12" height="12">
+                    <div class="search-result-content">
+                        <div class="search-result-icon">
+                            <img src="public/images/Search.png" alt="Search" width="12" height="12">
+                        </div>
+                        <span class="search-result-text">${product.name}</span>
                     </div>
-                    <span class="search-result-text">${product.name}</span>
-                </div>
-            `;
+                `;
 
             // Add click functionality - use exact product name
             resultItem.addEventListener('click', function (e) {
@@ -217,10 +225,10 @@ function initializeSearch() {
             const noResults = document.createElement('div');
             noResults.className = 'search-result-item';
             noResults.innerHTML = `
-                <div class="search-result-content">
-                    <span class="search-result-text">No products found for "${query}"</span>
-                </div>
-            `;
+                    <div class="search-result-content">
+                        <span class="search-result-text">No products found for "${query}"</span>
+                    </div>
+                `;
             searchResults.appendChild(noResults);
         }
     }
@@ -340,15 +348,23 @@ function updateCartDisplay() {
                 <div class="cart-item-details">
                     <h3 class="clickable-item" onclick="goToProductDetail('${item.name}')">${item.name}</h3>
                     <p>Size: ${item.size} | Grind: ${item.grind}</p>
+                    <!-- Mobile price/total row -->
+                    <div class="cart-item-price-row">
+                        <span><strong>Price:</strong> $${item.price.toFixed(2)}</span>
+                        <span><strong>Total:</strong> $${(item.price * item.quantity).toFixed(2)}</span>
+                    </div>
                 </div>
             </div>
+            <!-- Desktop price (hidden on mobile) -->
             <div class="cart-item-price">$${item.price.toFixed(2)}</div>
             <div class="cart-item-quantity">
+                <span style="margin-right: 0.5rem; font-weight: 600; color: var(--dark-brown);">Qty:</span>
                 <button class="quantity-btn-cart" onclick="updateQuantity(${index}, -1)">-</button>
                 <input type="number" value="${item.quantity}" min="1" max="10" class="quantity-input-cart" 
                        onchange="updateQuantityInput(${index}, this.value)">
                 <button class="quantity-btn-cart" onclick="updateQuantity(${index}, 1)">+</button>
             </div>
+            <!-- Desktop total (hidden on mobile) -->
             <div class="cart-item-total">$${(item.price * item.quantity).toFixed(2)}</div>
             <div class="cart-item-remove">
                 <img src="public/images/X.png" alt="Remove" class="remove-btn-icon" onclick="removeFromCart(${index})">
@@ -522,9 +538,11 @@ function displayCheckoutItems() {
             <img src="${item.image}" alt="${item.name}" class="checkout-item-image">
             <div class="checkout-item-details">
                 <h3>${item.name}</h3>
-                <p>Quantity: ${item.quantity}</p>
+                <p>
+                    <span>Quantity: ${item.quantity}</span>
+                    <span class="checkout-item-price">$${(item.price * item.quantity).toFixed(2)}</span>
+                </p>
             </div>
-            <div class="checkout-item-price">$${(item.price * item.quantity).toFixed(2)}</div>
         `;
 
         checkoutItemsContainer.appendChild(checkoutItemDiv);
@@ -1212,4 +1230,126 @@ function initializeScrollHeader() {
 
         lastScrollTop = currentScrollTop <= 0 ? 0 : currentScrollTop;
     });
+}
+
+// Initialize mobile menu functionality
+function initializeMobileMenu() {
+    const hamburgerMenu = document.getElementById('hamburger-menu');
+    const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
+    const mobileMenuClose = document.getElementById('mobile-menu-close');
+
+    // Open mobile menu
+    if (hamburgerMenu) {
+        hamburgerMenu.addEventListener('click', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            openMobileMenu();
+        });
+    }
+
+    // Close mobile menu
+    if (mobileMenuClose) {
+        mobileMenuClose.addEventListener('click', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            closeMobileMenu();
+        });
+    }
+
+    // Close mobile menu when clicking on overlay
+    if (mobileMenuOverlay) {
+        mobileMenuOverlay.addEventListener('click', function (e) {
+            if (e.target === mobileMenuOverlay) {
+                closeMobileMenu();
+            }
+        });
+    }
+
+    // Close mobile menu when clicking on navigation links
+    const mobileNavLinks = mobileMenuOverlay?.querySelectorAll('nav a');
+    if (mobileNavLinks) {
+        mobileNavLinks.forEach(link => {
+            link.addEventListener('click', function () {
+                closeMobileMenu();
+            });
+        });
+    }
+
+    // ESC key to close mobile menu
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && mobileMenuOverlay?.classList.contains('active')) {
+            closeMobileMenu();
+        }
+    });
+
+    function openMobileMenu() {
+        if (mobileMenuOverlay) {
+            mobileMenuOverlay.classList.add('active');
+            document.body.style.overflow = 'hidden'; // Prevent background scrolling
+        }
+    }
+
+    function closeMobileMenu() {
+        if (mobileMenuOverlay) {
+            mobileMenuOverlay.classList.remove('active');
+            document.body.style.overflow = ''; // Restore background scrolling
+        }
+    }
+}
+
+// Initialize mobile filter sidebar functionality
+function initializeMobileFilterSidebar() {
+    const filterTrigger = document.getElementById('mobile-filter-trigger');
+    const filterSidebar = document.getElementById('filter-sidebar-overlay');
+    const filterClose = document.getElementById('filter-sidebar-close');
+
+    // Open filter sidebar
+    if (filterTrigger) {
+        filterTrigger.addEventListener('click', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            openFilterSidebar();
+        });
+    }
+
+    // Close filter sidebar
+    if (filterClose) {
+        filterClose.addEventListener('click', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            closeFilterSidebar();
+        });
+    }
+
+    // Close on overlay click
+    if (filterSidebar) {
+        filterSidebar.addEventListener('click', function (e) {
+            if (e.target === filterSidebar) {
+                closeFilterSidebar();
+            }
+        });
+    }
+
+    // Close on escape key
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && filterSidebar && filterSidebar.classList.contains('active')) {
+            closeFilterSidebar();
+        }
+    });
+}
+
+function openFilterSidebar() {
+    const filterSidebar = document.getElementById('filter-sidebar-overlay');
+    if (filterSidebar) {
+        filterSidebar.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+function closeFilterSidebar() {
+    const filterSidebar = document.getElementById('filter-sidebar-overlay');
+    if (filterSidebar) {
+        filterSidebar.classList.remove('active');
+        document.body.style.overflow = '';
+    }
 }

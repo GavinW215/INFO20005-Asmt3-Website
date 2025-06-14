@@ -13,12 +13,18 @@
     <title>Coffee Bean Shop</title>
 </head>
 
-<body>
+<body class="home-page">
 
     <header id="main-header">
         <div class="header-container">
+            <!-- Hamburger Menu (Mobile) -->
+            <button class="hamburger" id="hamburger-menu">
+            </button>
+
             <div class="logo">
-                <img src="public/images/logo2.png" alt="Coffee Bean Shop Logo">
+                <a href="index.html">
+                    <img src="public/images/logo2.png" alt="Coffee Bean Shop Logo">
+                </a>
             </div>
             <nav>
                 <ul class="nav-menu">
@@ -39,6 +45,28 @@
                     <img src="public/images/Shopping cart.png" alt="Shopping Cart" width="24" height="24">
                     <span class="cart-count" style="display: none;">0</span>
                 </a>
+            </div>
+        </div>
+
+        <!-- Mobile Menu Overlay -->
+        <div class="mobile-menu-overlay" id="mobile-menu-overlay">
+            <div class="mobile-menu-header">
+                <span class="mobile-menu-title">Menu</span>
+                <button class="mobile-menu-close" id="mobile-menu-close"></button>
+            </div>
+            <nav class="mobile-menu-nav">
+                <a href="index.html">Home</a>
+                <a href="shop.html">Shop All</a>
+                <a href="#footer">About Us</a>
+                <a href="#footer">Contact</a>
+            </nav>
+            <div class="mobile-menu-footer">
+                <span class="follow-us-text">Follow Us</span>
+                <div class="mobile-social-icons">
+                    <a href="#" class="social-icon">
+                        <img src="public\images\Icons.png" alt="Social Icons" width="24" height="24">
+                    </a>
+                </div>
             </div>
         </div>
 
@@ -182,7 +210,9 @@
     <footer id="footer">
         <div class="footer-container">
             <div class="footer-logo">
-                <img src="public\images\logo-footer.png" alt="Coffee Bean Shop Logo">
+                <a href="index.html">
+                    <img src="public\images\logo-footer.png" alt="Coffee Bean Shop Logo">
+                </a>
             </div>
             <div class="footer-about">
                 <h3 class="footer-heading">About</h3>
